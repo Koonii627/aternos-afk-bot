@@ -3,9 +3,9 @@ const http = require('http');
 
 const config = {
   host: "eeesa.aternos.me",
-  port: 45339,                    // Update this when it changes
+  port: 45339,                    // Update when it changes
   username: "afk-bot",
-  version: "1.21.11",                // Change to your version
+  version: "1.21",                // Change to your version
   auth: "offline"
 };
 
@@ -30,7 +30,7 @@ function createBot() {
     console.log(`⚠️ Disconnected: ${reason}`);
     if (reconnectAttempts < MAX_ATTEMPTS) {
       reconnectAttempts++;
-      const delay = 8000 + (reconnectAttempts * 7000);
+      const delay = 12000 + (reconnectAttempts * 8000);
       console.log(`🔄 Reconnecting in ${delay/1000}s...`);
       setTimeout(createBot, delay);
     }
@@ -41,29 +41,37 @@ function createBot() {
 }
 
 function startAntiAFK() {
-  // More human-like behavior
+  console.log("🛡️ Starting human-like anti-AFK behavior...");
+
   setInterval(() => {
     if (!bot || !bot.entity) return;
-    
-    // Hit air
-    bot.attack(bot.entity);
-    
-    // Random look around
-    if (Math.random() < 0.3) {
-      bot.look(Math.random() * Math.PI * 2, (Math.random() - 0.5) * 1.5);
+
+    const rand = Math.random();
+
+    // 1. Look around randomly (safest & most effective)
+    if (rand < 0.6) {
+      bot.look(Math.random() * Math.PI * 2, (Math.random() - 0.5) * 1.8);
     }
-    
-    // Occasional jump
-    if (Math.random() < 0.15) {
+
+    // 2. Occasional small movement
+    if (rand < 0.25) {
+      bot.setControlState('forward', true);
+      setTimeout(() => bot.setControlState('forward', false), 400);
+    }
+
+    // 3. Occasional jump
+    if (rand < 0.18) {
       bot.setControlState('jump', true);
-      setTimeout(() => bot.setControlState('jump', false), 300);
+      setTimeout(() => bot.setControlState('jump', false), 250);
     }
-    
-    // Very occasional chat
-    if (Math.random() < 0.08) {
-      bot.chat("zZz...");
+
+    // 4. Very rare chat
+    if (rand < 0.06) {
+      const messages = ["zZz...", "afk", "hmm", "brb"];
+      bot.chat(messages[Math.floor(Math.random() * messages.length)]);
     }
-  }, 650 + Math.random() * 850);   // More frequent activity
+
+  }, 650 + Math.random() * 950); // Every 0.65 ~ 1.6 seconds
 }
 
 // Keep Render alive
