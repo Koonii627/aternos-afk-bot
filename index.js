@@ -5,7 +5,7 @@ const config = {
   host: "eeesa.aternos.me",
   port: 45339,                    // Update when it changes
   username: "afk-bot",
-  version: "1.21",                // Change to your version
+  version: "1.21.11",                // Change to your version
   auth: "offline"
 };
 
